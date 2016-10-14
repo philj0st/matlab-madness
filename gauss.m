@@ -20,7 +20,7 @@ function x = gauss( A, b )
 	for k = 1:n
         
 		% Check for Zero column
-		col = B(:,1);
+		col = B(:,k);
         zeroCol = zeros(length(col),1);
         if col == zeroCol
             break % terminate execution of the for loop k = 1:n
@@ -29,7 +29,7 @@ function x = gauss( A, b )
 		% Find pivot element
         % [Y,I] = max(X) returns the indices of the maximum values in vector I.
         % searching the untematrix from k to n rows in the n-th column
-		[pivot, pivotInd] = max(abs(B(k:n, k))); %in which case is pivot as return value of max ddifferent from manual retreiving with index
+		[~, pivotInd] = max(abs(B(k:n, k))); %in which case is pivot as return value of max ddifferent from manual retreiving with index
 		% Index of pivot element
 		pivotInd = pivotInd + (k-1); %add k-1 because were only searching max from k:n
  		pivot = B(pivotInd, k); %i think this is unnecessary => definitely not unessecary .. but why?
