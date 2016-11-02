@@ -1,8 +1,8 @@
 % LU Decomposition of regular square matrices
 % @author Philipp Jost
 % returns Permutationmatrix, Lower Triangle and Upper Triangle
-function [ L U P ] = luDecomp( A )
-[m n] = size(A);
+function [L,U,P] = luDecomp( A )
+[m,n] = size(A);
 if m ~= n
     throw(MException('luDecomp:noSquareMatrix','please enter a square matrix'))
 end
@@ -16,18 +16,18 @@ U = A;
 % for each column
 % i-th step of the algorithm
 for i = 1:n
-    % find absolute max of the column i
-    [pivot pivotIndex] = max(abs(U(:,i)));
-    
+    % find absolute max of the column i within rows i to n
+    [pivot, pivotIndex] = max(abs(U(i:end,i)));
+    %pivotIndex must be respective to whole matrix
+    pivotIndex = pivotIndex + i -1;
     % if pivot is not in top row
     if pivotIndex ~= i
-        % swap first with pivot row
-        U = swapRows(U,i,pivotIndex);
+        % swap top with pivot row
+        U([i pivotIndex],:) = U([pivotIndex i],:);
         % do the same for permutation matrix
-        P = swapRows(P,i,pivotIndex);
-
-        % #TODO! swap lambdas in L!
-        
+        P([i pivotIndex],:) = P([pivotIndex i],:);
+        % and the factors in L
+        L([i pivotIndex],:) = L([pivotIndex i],:);
     end
     
     % for each row underneath pivot
@@ -47,11 +47,7 @@ for i = 1:n
         U(j,:) = U(j,:) - lambda * U(i,:);
     end
 end
-    % take an Matrix and swap row i with toSwapWith
-    function A = swapRows(A, i, toSwapWith)
-        tempRow = A(i,:);
-        A(i,:) = A(toSwapWith,:);
-        A(toSwapWith,:) = tempRow;
-    end
+% add identity to L so it will be able to be multiplied with
+L = L + eye(n);
 end
 
